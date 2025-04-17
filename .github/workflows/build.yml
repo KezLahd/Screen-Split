@@ -24,39 +24,21 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     
-    - name: Download Inno Setup
+    - name: Download and Install Inno Setup
       shell: powershell
       run: |
-        $maxAttempts = 3
-        $attempt = 1
-        $downloadSuccess = $false
+        Write-Host "Downloading Inno Setup..."
+        $url = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
+        curl.exe -o innosetup.exe $url
         
-        do {
-          try {
-            Write-Host "Attempt $attempt to download Inno Setup..."
-            $ProgressPreference = 'SilentlyContinue'
-            Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe" -TimeoutSec 300
-            if (Test-Path "innosetup.exe") {
-              $downloadSuccess = $true
-              Write-Host "Download successful!"
-              break
-            }
-          }
-          catch {
-            Write-Host "Attempt $attempt failed: $_"
-            Start-Sleep -Seconds 10
-          }
-          $attempt++
-        } while ($attempt -le $maxAttempts -and -not $downloadSuccess)
-
-        if (-not $downloadSuccess) {
-          Write-Host "Failed to download Inno Setup after $maxAttempts attempts"
+        if (Test-Path "innosetup.exe") {
+          Write-Host "Download successful! Installing..."
+          Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
+          Write-Host "Inno Setup installation completed"
+        } else {
+          Write-Host "Failed to download Inno Setup"
           exit 1
         }
-
-        Write-Host "Installing Inno Setup..."
-        Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
-        Write-Host "Inno Setup installation completed"
     
     - name: Build with PyInstaller
       run: |
