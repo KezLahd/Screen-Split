@@ -25,9 +25,38 @@ jobs:
         pip install pyinstaller
     
     - name: Download Inno Setup
+      shell: powershell
       run: |
-        Invoke-WebRequest "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe" -OutFile "innosetup.exe"
+        $maxAttempts = 3
+        $attempt = 1
+        $downloadSuccess = $false
+        
+        do {
+          try {
+            Write-Host "Attempt $attempt to download Inno Setup..."
+            $ProgressPreference = 'SilentlyContinue'
+            Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe" -TimeoutSec 300
+            if (Test-Path "innosetup.exe") {
+              $downloadSuccess = $true
+              Write-Host "Download successful!"
+              break
+            }
+          }
+          catch {
+            Write-Host "Attempt $attempt failed: $_"
+            Start-Sleep -Seconds 10
+          }
+          $attempt++
+        } while ($attempt -le $maxAttempts -and -not $downloadSuccess)
+
+        if (-not $downloadSuccess) {
+          Write-Host "Failed to download Inno Setup after $maxAttempts attempts"
+          exit 1
+        }
+
+        Write-Host "Installing Inno Setup..."
         Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
+        Write-Host "Inno Setup installation completed"
     
     - name: Build with PyInstaller
       run: |
