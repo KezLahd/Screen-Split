@@ -1,11 +1,11 @@
 #define MyAppName "Screen Split"
-#define MyAppVersion "1.0.0"
-#define MyAppPublisher "Kieran Jackson"
+#define MyAppVersion "1.1.0"
+#define MyAppPublisher "KezLahd"
 #define MyAppURL "https://github.com/KezLahd/Screen-Split"
 #define MyAppExeName "Screen Split.exe"
 
 [Setup]
-AppId={{F7A6B47E-0B6C-4A5B-9C8D-2E4F3B9A8E1D}}
+AppId={{4D7B8E2F-1C6B-4E5D-A2D8-BB2F6E6C8A1D}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -18,26 +18,21 @@ AllowNoIcons=yes
 LicenseFile=LICENSE
 OutputDir=installer
 OutputBaseFilename=ScreenSplit-Setup
-Compression=lzma2/ultra64
+SetupIconFile=app_icon.ico
+Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile=assets\icon.ico
-UninstallDisplayIcon={app}\{#MyAppExeName}
-PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional icons:"
-Name: "quicklaunchicon"; Description: "Create a &Quick Launch shortcut"; GroupDescription: "Additional icons:"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1; Check: not IsAdminInstallMode
 
 [Files]
 Source: "dist\Screen Split\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\Screen Split\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

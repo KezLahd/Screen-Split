@@ -50,7 +50,7 @@ jobs:
         Write-Host "Current directory contents:"
         Get-ChildItem -Path .
         Write-Host "Running PyInstaller..."
-        pyinstaller screen_split.spec
+        pyinstaller "Screen Split.spec"
     
     - name: Create Inno Setup installer
       run: |
