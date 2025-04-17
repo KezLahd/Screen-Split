@@ -47,7 +47,7 @@ jobs:
     
     - name: Build with PyInstaller
       run: |
-        pyinstaller pyinstaller.spec
+        pyinstaller screen_split.spec
     
     - name: Create Inno Setup installer
       run: |
