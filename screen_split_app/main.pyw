@@ -2757,8 +2757,8 @@ class ScreenSplitApp(QMainWindow):
                 "Update Error",
                 f"Failed to download update: {str(e)}\nPlease try updating manually."
             )
-            
-if __name__ == '__main__':
+
+def main():
     try:
         print("Starting application...")
         app = QApplication(sys.argv)
@@ -2774,3 +2774,6 @@ if __name__ == '__main__':
         traceback.print_exc()
         QMessageBox.critical(None, "Error", f"Failed to start application: {str(e)}\n\nFull traceback:\n{traceback.format_exc()}")
         sys.exit(1)
+
+if __name__ == '__main__':
+    main()
