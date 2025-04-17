@@ -24,21 +24,26 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     
-    - name: Download and Install Inno Setup
+    - name: Download and Setup Inno Setup
       shell: powershell
       run: |
-        Write-Host "Downloading Inno Setup..."
+        Write-Host "Downloading Inno Setup Command Line Compiler..."
         $url = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
-        curl.exe -o innosetup.exe $url
+        $setupDir = ".\innosetup"
         
-        if (Test-Path "innosetup.exe") {
-          Write-Host "Download successful! Installing..."
-          Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
-          Write-Host "Inno Setup installation completed"
-        } else {
-          Write-Host "Failed to download Inno Setup"
-          exit 1
-        }
+        # Create directory
+        New-Item -ItemType Directory -Force -Path $setupDir
+        
+        # Download
+        curl.exe -L -o "$setupDir\innosetup.exe" $url
+        
+        # Extract using 7zip from GitHub runner
+        Write-Host "Extracting Inno Setup..."
+        7z x "$setupDir\innosetup.exe" -o"$setupDir" -y
+        
+        # Add Inno Setup to PATH
+        Write-Host "Adding Inno Setup to PATH..."
+        echo "$setupDir" | Out-File -FilePath $env:GITHUB_PATH -Append
     
     - name: Build with PyInstaller
       run: |
@@ -46,7 +51,7 @@ jobs:
     
     - name: Create Inno Setup installer
       run: |
-        & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' /Q installer.iss
+        iscc.exe /Q installer.iss
     
     - name: Create Release
       id: create_release
