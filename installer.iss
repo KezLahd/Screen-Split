@@ -1,5 +1,5 @@
 #define MyAppName "Screen Split"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.1.2"
 #define MyAppPublisher "KezLahd"
 #define MyAppURL "https://github.com/KezLahd/Screen-Split"
 #define MyAppExeName "Screen Split.exe"
