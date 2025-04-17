@@ -47,6 +47,9 @@ jobs:
     
     - name: Build with PyInstaller
       run: |
+        Write-Host "Current directory contents:"
+        Get-ChildItem -Path .
+        Write-Host "Running PyInstaller..."
         pyinstaller screen_split.spec
     
     - name: Create Inno Setup installer
