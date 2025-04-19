@@ -25,7 +25,7 @@ export default async function Home() {
   const installerUrl = installerAsset?.download_url || "#"
 
   // Replace with your actual GitHub repository URL
-  const githubReleasesUrl = "#" // Change this to your actual GitHub releases page
+  const githubReleasesUrl = "https://github.com/KezLahd/Screen-Split/releases"
 
   // Get download count for display
   const totalDownloads = releases.reduce((total, release) => {
@@ -92,7 +92,7 @@ export default async function Home() {
                     </a>
                   </Button>
                   <Button size="lg" variant="outline" asChild className="border-zinc-700 hover:bg-zinc-800 text-white">
-                    <a href={https://github.com/KezLahd/Screen-Split/releases} target="_blank" rel="noopener noreferrer">
+                    <a href={githubReleasesUrl} target="_blank" rel="noopener noreferrer">
                       <RefreshCw className="mr-2 h-5 w-5" />
                       Check for Updates
                     </a>
