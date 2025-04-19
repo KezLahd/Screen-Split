@@ -1,62 +1,27 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Logs
-*.log
-app_debug.log
-app_launch.log
-app_output.log
-launch_log.txt
-setup_log.txt
+# dependencies
+/node_modules
 
-# PyInstaller
-*.manifest
-*.spec
-!Screen Split.spec
-build/
-dist/
+# next.js
+/.next/
+/out/
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# production
+/build
 
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Temporary files
-*.tmp
-*.bak
-*.swp
-*~
+# env files
+.env*
 
-# Virtual Environment
-venv/
-ENV/
+# vercel
+.vercel
 
-# Local development
-.env
-.env.local
-.env.*.local 
+# typescript
+*.tsbuildinfo
+next-env.d.ts
