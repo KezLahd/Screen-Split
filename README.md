@@ -145,5 +145,5 @@ MIT. See [LICENSE](./LICENSE). Use it, ship it, fork it — all I ask is attribu
 ---
 
 <p align="center">
-  <sub>Built by <a href="https://github.com/KezLahd">Kieran Jackson</a> · <a href="https://screensplit.kieranjackson.com">screensplit.kieranjackson.com</a></sub>
+  <sub>Built by <a href="https://github.com/KezLahd">Kieran Jackson</a> · <a href="https://screensplit.kieranjackson.com">screensplit.kieranjackson.com</a> · Another <a href="https://instagram.com/kieranjxn">Kez Curation ↗</a></sub>
 </p>
