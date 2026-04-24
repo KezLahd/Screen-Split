@@ -1,84 +1,149 @@
-# Screen Split App
+<div align="center">
+  <img src="./assets/banner-hero.svg" alt="Screen Split" width="100%"/>
+</div>
 
-A professional screen splitting application that allows you to view your screen and camera simultaneously, with support for adding a brand logo.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-3B82F6?style=for-the-badge&labelColor=0b1220&logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/UI-PyQt6-3B82F6?style=for-the-badge&labelColor=0b1220" alt="PyQt6"/>
+  <img src="https://img.shields.io/badge/Platform-Windows-60A5FA?style=for-the-badge&labelColor=0b1220" alt="Windows"/>
+  <img src="https://img.shields.io/badge/License-MIT-93C5FD?style=for-the-badge&labelColor=0b1220" alt="MIT"/>
+  <img src="https://img.shields.io/badge/Version-1.1.2-3B82F6?style=for-the-badge&labelColor=0b1220" alt="Version"/>
+</p>
 
-## Features
+<br/>
 
-- Screen capture from any display
-- Camera feed with zoom controls
-- Brand logo support with zoom functionality
-- Modern dark theme UI
-- Resizable window with smooth animations
-- Customizable layout
+> **Screen Split** is a Windows desktop app that puts your screen and your webcam side-by-side in one tidy, resizable window — with a brand-logo overlay on top. Built for creators who want to record voiceover reactions, tutorials, or personality-forward demos without wrestling with OBS.
 
-## Installation
+<br/>
 
-### Prerequisites
-- Python 3.8 or higher
-- Windows 10 or higher
+## What it does
 
-### Method 1: Using pip (Recommended)
-1. Open Command Prompt as Administrator
-2. Run the following commands:
-```bash
+- **Screen capture from any display** — pick the monitor, pick a region, done.
+- **Webcam feed with zoom and panning** — your face, where you want it, at the size you want it.
+- **Brand-logo overlay** with its own zoom and placement controls — stays on top of both panels.
+- **Resizable split window** — drag the divider, snap between horizontal/vertical splits, go fullscreen.
+- **Dark-theme native UI** — clean, intentional, the way a desktop app should look in 2026.
+- **Smooth animations** for window transitions so the thing feels built, not cobbled.
+
+<br/>
+
+## Download & install
+
+The fastest path for non-developers is a packaged release.
+
+### Prebuilt installer
+
+Grab the latest from the [releases page](https://github.com/KezLahd/Screen-Split/releases) and run it. Windows will handle the rest.
+
+### From PyPI
+
+```powershell
 pip install screen-split-app
-```
-
-### Method 2: Manual Installation
-1. Download the latest release from the [releases page](https://github.com/KezLahd/Screen-Split/releases)
-2. Extract the zip file
-3. Open Command Prompt in the extracted folder
-4. Run:
-```bash
-pip install -r requirements.txt
-python setup.py install
-```
-
-## Usage
-
-1. Launch the application by running:
-```bash
 screen-split
 ```
 
-2. Or use the desktop shortcut created during installation
+### From source
 
-### Controls
-- **Camera Controls**:
-  - Click the camera icon to toggle camera
-  - Use zoom buttons to adjust camera zoom
-  - Right-click for additional options
+```powershell
+git clone https://github.com/KezLahd/Screen-Split.git
+cd Screen-Split
+pip install -r requirements.txt
+python screen_split_app/main.pyw
+```
 
-- **Logo Controls**:
-  - Click the logo area to add/change logo
-  - Right-click for zoom controls
-  - Drag to resize window
+<br/>
 
-- **Display Selection**:
-  - Right-click on the screen area
-  - Select "Select Display" to choose which screen to capture
+## Requirements
 
-## Updates
+| | |
+|---|---|
+| **OS** | Windows 10 or later |
+| **Python** | 3.8+ |
+| **Webcam** | Any DirectShow-compatible device |
+| **GPU** | Not required — runs comfortably on integrated graphics |
 
-The application will automatically check for updates when launched. You can also manually check for updates by:
-1. Right-clicking on the title bar
-2. Selecting "Check for Updates"
+<br/>
 
-## Troubleshooting
+## The stack
 
-If you encounter any issues:
-1. Check the error log in `%APPDATA%\Screen Split App\logs`
-2. Make sure all dependencies are installed correctly
-3. Ensure your camera drivers are up to date
-4. Try running the application as administrator
+| Layer | Library |
+|---|---|
+| UI framework | **PyQt6** — native Windows widgets, high-DPI aware |
+| Screen capture | **mss** — zero-copy screen grabs, fast enough for real-time preview |
+| Camera | **OpenCV** (`opencv-python`) — webcam feed with zoom/pan on the image matrix |
+| Windows integration | **pywin32** — window enumeration, icon extraction, shell glue |
+| Compute | **NumPy** — pixel math for the logo compositing path |
 
-## Support
+Everything fits in a single module (`screen_split_app/main.pyw`) — around 2,800 lines of PyQt + frame-loop glue. No virtual DOMs, no build step, just a Python process.
 
-For support, please:
-1. Check the [documentation](https://github.com/KezLahd/Screen-Split/wiki)
-2. Open an issue on GitHub
-3. Contact support@example.com
+<br/>
+
+## How it's wired
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                         QMainWindow                          │
+│  ┌────────────────────┐        ┌────────────────────────┐    │
+│  │  Screen capture    │        │  Webcam capture        │    │
+│  │  (mss.mss + timer) │        │  (cv2.VideoCapture)    │    │
+│  │         │          │        │         │              │    │
+│  │         ▼          │        │         ▼              │    │
+│  │   QImage frame     │        │   QImage frame         │    │
+│  │         │          │        │         │              │    │
+│  │         └────┬─────┴────┬───┘         │              │    │
+│  │              ▼          ▼             │              │    │
+│  │     ┌──────────────┐  ┌──────────────┐│              │    │
+│  │     │  QSplitter   │◀─┤  Logo layer  │◀──────────────┘    │
+│  │     │  (resizable) │  │ (QPixmap alpha)                   │
+│  │     └──────────────┘  └──────────────┘                    │
+│  └──────────────────────────────────────────────────────────┘
+```
+
+Two producer threads push frames into Qt via `pyqtSignal`; the UI thread paints. `mss` is the thing that makes this smooth — it's single-digit milliseconds per screen grab even at 4K, which leaves headroom for the webcam pipeline and the logo composite.
+
+<br/>
+
+## Project layout
+
+```
+Screen-Split/
+├── screen_split_app/
+│   ├── __init__.py
+│   └── main.pyw          The whole app — one module, deliberately
+├── requirements.txt      Runtime deps
+├── setup.py              Packaging config (PyPI name: screen-split-app)
+├── version.txt           Single source of truth for the installer version
+├── update.bat            One-click update script for packaged users
+└── README.md             This file
+```
+
+<br/>
+
+## Building an installer
+
+```powershell
+pip install pyinstaller
+pyinstaller --onefile --windowed screen_split_app/main.pyw
+```
+
+The packaged installer that ships on the releases page is built via a GitHub Actions workflow triggered on tag push.
+
+<br/>
+
+## Why I built this
+
+Because OBS is overkill for most reaction-style recordings and under-featured for the specific thing I wanted — a webcam that stays pinned in a predictable place, a brand-mark I can drop on without re-configuring three panels, and a native feel I didn't get from browser-based tools. The landing page at **[screensplit.kieranjackson.com](https://screensplit.kieranjackson.com)** goes into the "who it's for" angle in more detail.
+
+<br/>
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT. See [LICENSE](./LICENSE). Use it, ship it, fork it — all I ask is attribution if you build on top of it.
+
+<br/>
+
+---
+
+<p align="center">
+  <sub>Built by <a href="https://github.com/KezLahd">Kieran Jackson</a> · <a href="https://screensplit.kieranjackson.com">screensplit.kieranjackson.com</a></sub>
+</p>
