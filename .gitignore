@@ -18,3 +18,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Internal planning / implementation notes — kept locally, not shipped publicly
+*_STATUS.md
+*_PLAN.md
+*_NOTES.md
+*_EXPLANATION.md
